@@ -1,0 +1,32 @@
+1.10
+	Updated this CHANGES file with changes since 1.4.
+
+1.9     2012-02-07 Documentation updates
+	Documentation updates
+
+1.6     2012-01-10
+	Fixed a problem where the receiver was always reenabled after
+	transmission. Reported by David Bath
+
+1.5	2011-09-09
+	Added vx_tx_active() function.
+
+1.4	2010-01-29
+	Added vx_tx_active(), suggested by Alan Burlison.
+
+1.3	2009-04-01
+	Fixed a compatibility problem with ATMEGA328 of the new arduino
+	Now use SIGNAL(TIMER1_COMPA_vect) instead of ISR(SIG_OUTPUT_COMPARE1A)
+	as discussed in
+	http://www.arduino.cc/cgi-bin/yabb2/YaBB.pl?num=1237714550/11
+	and reported by Jaime Castro.
+
+1.2	2009-03-30
+	Fixed a problem that prevented compiling with arduino-0015
+	Reported by Jaime Castro
+
+1.1	2008-06-24
+	Now can compile for atmega8
+	Reported by creatrope
+
+1.0	Original release
