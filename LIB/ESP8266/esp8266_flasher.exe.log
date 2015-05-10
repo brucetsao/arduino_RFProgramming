@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "esp8266_flasher.py", line 81, in showDialog
+UnicodeEncodeError: 'ascii' codec can't encode characters in position 3-6: ordinal not in range(128)
+Traceback (most recent call last):
+  File "esp8266_flasher.py", line 81, in showDialog
+UnicodeEncodeError: 'ascii' codec can't encode characters in position 3-6: ordinal not in range(128)
+Traceback (most recent call last):
+  File "esp8266_flasher.py", line 81, in showDialog
+UnicodeEncodeError: 'ascii' codec can't encode characters in position 3-6: ordinal not in range(128)

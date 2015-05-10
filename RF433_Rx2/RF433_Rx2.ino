@@ -17,7 +17,7 @@
 const int led_pin = 13;
 const int transmit_pin = 6; //12
 const int receive_pin = 7; //11
-const int transmit_en_pin = 3;
+
 
 LiquidCrystal_I2C lcd(0x27, 20, 4); // set the LCD address to 0x27 for a 16 chars and 2 line display
 
@@ -38,7 +38,6 @@ void setup()
     // Initialise the IO and ISR
     vw_set_tx_pin(transmit_pin);
     vw_set_rx_pin(receive_pin);
-    vw_set_ptt_pin(transmit_en_pin);
     vw_set_ptt_inverted(true); // Required for DR3100
     vw_setup(2000);	 // Bits per sec
 

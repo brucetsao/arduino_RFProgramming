@@ -1,0 +1,13 @@
+This is a trimmed-down version of Peter Knight's excellent Cryptosuite library for Arduino, supporting secure hashing and hashed message authentication using SHA-1 and HMAC-SHA-1.
+
+To help fit complex applications within the limited code space of the Arduino, this version strips out the SHA-256 functionality -- it wasn't required of our OAuth-driven code.  If you specifically require this capability (and can afford the extra program space), download the original full version of the library here:
+
+https://github.com/Cathedrow/Cryptosuite
+
+The original also contains a test suite and further exposition on the use of hash functions.
+
+
+Installation:
+  Make a 'libraries' directory with your Arduino sketches folder if you do not already have one.
+  Rename this folder 'Sha' and move it into that directory.
+  Restart Arduino IDE to rescan for new libraries.

@@ -1,0 +1,38 @@
+#######################################
+# Syntax Coloring Map For RF22
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+RF22    KEYWORD1
+RF22Datagram    KEYWORD1
+RF22ReliableDatgram    KEYWORD1
+RF22Router    KEYWORD1
+RF22MEsh    KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+init	KEYWORD2
+reset	KEYWORD2
+spiRead		KEYWORD2
+spiWrite	KEYWORD2
+spiBurstRead	KEYWORD2
+spiBurstWrite	KEYWORD2
+statusRead	KEYWORD2
+
+sendtoWait	KEYWORD2
+recvfromAck	KEYWORD2
+recvfromAckTimeout	KEYWORD2
+
+######################################
+# Instances (KEYWORD2)
+#######################################
+
+rf22 KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+######################################
