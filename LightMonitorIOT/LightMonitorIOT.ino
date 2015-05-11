@@ -61,13 +61,20 @@ void loop() {
  
 	if (client.connect(server,80)) { // REPLACE WITH YOUR SERVER ADDRESS
 		client.println("POST /iot/add.php HTTP/1.1"); 
+                Serial.println("POST /iot/add.php HTTP/1.1"); 
 		client.print("Host:"); // SERVER ADDRESS HERE TOO
+		Serial.print("Host:"); // SERVER ADDRESS HERE TOO
 		client.println(server); // SERVER ADDRESS HERE TOO
+		Serial.println(server); // SERVER ADDRESS HERE TOO
 		client.println("Content-Type: application/x-www-form-urlencoded"); 
+		Serial.println("Content-Type: application/x-www-form-urlencoded"); 
 		client.print("Content-Length: "); 
+		Serial.print("Content-Length: "); 
 		client.println(connectstr.length()); 
+		Serial.println(connectstr.length()); 
 		client.println(); 
 		client.print(connectstr); 
+		Serial.print(connectstr); 
 	} 
 
 	if (client.connected()) { 

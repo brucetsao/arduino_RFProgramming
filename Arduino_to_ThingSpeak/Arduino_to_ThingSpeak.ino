@@ -37,69 +37,43 @@ https://github.com/iobridge/ThingSpeak-Arduino-Examples/blob/master/Ethernet/Ard
 
 #include <SPI.h>
 #include <Ethernet.h>
+#include <Wire.h>
+#include <BH1750.h>
+
 
 // Local Network Settings
-byte mac[] = { 0xD4, 0x28, 0xB2, 0xFF, 0xA0, 0xA1 }; // Must be unique on local network
+byte mac[] = {
+  0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF
+};
+IPAddress ip(192, 168, 30, 200);
+IPAddress dnServer(168, 95, 1, 1);
+// the router's gateway address:
+IPAddress gateway(192, 168, 30, 254);
+// the subnet:
+IPAddress subnet(255, 255, 255, 0);
 
 // ThingSpeak Settings
-char thingSpeakAddress[] = "api.thingspeak.com";
-String writeAPIKey = "XXXMX2WYYR0EVZZZ";
-const int updateThingSpeakInterval = 16 * 1000;      // Time interval in milliseconds to update ThingSpeak (number of seconds * 1000 = interval)
+byte server[]  = { 184, 106, 153, 149 }; // IP Address for the ThingSpeak API
+String writeAPIKey = "UR42ZTYTE4PBQ8Y2 ";    // Write API Key for a ThingSpeak Channel
+const int updateInterval = 30000;        // Time interval in milliseconds to update ThingSpeak   
+EthernetClient client ;
+
 
 // Variable Setup
 long lastConnectionTime = 0; 
 boolean lastConnected = false;
-int failedCounter = 0;
+int resetCounter = 0;
 
 // Initialize Arduino Ethernet Client
-EthernetClient client;
-
-void setup()
-{
-  // Start Serial for debugging on the Serial Monitor
-  Serial.begin(9600);
-  
-  // Start Ethernet on Arduino
-  startEthernet();
-}
-
-void loop()
-{
-  // Read value from Analog Input Pin 0
-  String analogValue0 = String(analogRead(A0), DEC);
-  
-  // Print Update Response to Serial Monitor
-  if (client.available())
-  {
-    char c = client.read();
-    Serial.print(c);
-  }
-
-  // Disconnect from ThingSpeak
-  if (!client.connected() && lastConnected)
-  {
-    Serial.println("...disconnected");
-    Serial.println();
-    
-    client.stop();
-  }
-  
-  // Update ThingSpeak
-  if(!client.connected() && (millis() - lastConnectionTime > updateThingSpeakInterval))
-  {
-    updateThingSpeak("field1="+analogValue0);
-  }
-  
-  // Check if Arduino Ethernet needs to be restarted
-  if (failedCounter > 3 ) {startEthernet();}
-  
-  lastConnected = client.connected();
-}
+BH1750 lightMeter;
 
 void updateThingSpeak(String tsData)
 {
-  if (client.connect(thingSpeakAddress, 80))
-  {         
+  if (client.connect(server, 80))
+  { 
+    Serial.println("Connected to ThingSpeak...");
+    Serial.println();
+        
     client.print("POST /update HTTP/1.1\n");
     client.print("Host: api.thingspeak.com\n");
     client.print("Connection: close\n");
@@ -113,54 +87,85 @@ void updateThingSpeak(String tsData)
     
     lastConnectionTime = millis();
     
-    if (client.connected())
-    {
-      Serial.println("Connecting to ThingSpeak...");
-      Serial.println();
-      
-      failedCounter = 0;
-    }
-    else
-    {
-      failedCounter++;
-  
-      Serial.println("Connection to ThingSpeak failed ("+String(failedCounter, DEC)+")");   
-      Serial.println();
-    }
+    resetCounter = 0;
     
   }
   else
   {
-    failedCounter++;
-    
-    Serial.println("Connection to ThingSpeak Failed ("+String(failedCounter, DEC)+")");   
+    Serial.println("Connection Failed.");   
     Serial.println();
     
+    resetCounter++;
+    
+    if (resetCounter >=5 ) {resetEthernetShield();}
+
     lastConnectionTime = millis(); 
   }
 }
 
-void startEthernet()
+void resetEthernetShield()
 {
+  Serial.println("Resetting Ethernet Shield.");   
+  Serial.println();
   
   client.stop();
-
-  Serial.println("Connecting Arduino to network...");
-  Serial.println();  
-
   delay(1000);
   
-  // Connect to network amd obtain an IP address using DHCP
-  if (Ethernet.begin(mac) == 0)
-  {
-    Serial.println("DHCP Failed, reset Arduino to try again");
-    Serial.println();
-  }
-  else
-  {
-    Serial.println("Arduino connected to network using DHCP");
-    Serial.println();
-  }
-  
+  Ethernet.begin(mac, ip, gateway, subnet);
   delay(1000);
 }
+
+
+void setup()
+{
+  // Start Serial for debugging on the Serial Monitor
+  Serial.begin(9600);
+    lightMeter.begin();
+  // Start Ethernet on Arduino
+    // start the Ethernet connection:
+  if (Ethernet.begin(mac) == 0) {
+    Serial.println("Failed to configure Ethernet using DHCP");
+    // no point in carrying on, so do nothing forevermore:
+    // try to congifure using IP address instead of DHCP:
+      Ethernet.begin(mac, ip, dnServer, gateway, subnet);
+
+  }
+  // give the Ethernet shield a second to initialize:
+  delay(1000);
+  Serial.println("connecting...");
+  
+}
+
+
+//String analogValue0 = String(lightMeter.readLightLevel(), DEC);
+void loop()
+{
+  String analogPin0 = String(analogRead(A0), DEC);
+  
+  // Print Update Response to Serial Monitor
+  if (client.available())
+  {
+    char c = client.read();
+    Serial.print(c);
+  }
+  
+  // Disconnect from ThingSpeak
+  if (!client.connected() && lastConnected)
+  {
+    Serial.println();
+    Serial.println("...disconnected.");
+    Serial.println();
+    
+    client.stop();
+  }
+  
+  // Update ThingSpeak
+  if(!client.connected() && (millis() - lastConnectionTime > updateInterval))
+  {
+    updateThingSpeak("field1="+analogPin0);
+  }
+  
+  lastConnected = client.connected();
+}
+
+
